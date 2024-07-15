@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/utils/assets_manager.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 void showSnackBar(BuildContext context, String message) {
@@ -9,6 +10,7 @@ void showSnackBar(BuildContext context, String message) {
     SnackBar(
       content: Text(
         message,
+        style: GoogleFonts.prompt(),
       ),
     ),
   );

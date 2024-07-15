@@ -194,17 +194,56 @@ class _ProfilePageState extends State<ProfilePage> {
       );
     } else {
       if (currentUser.uid != userModel.uid) {
-        return buildElevatedButton(
-          onPressed: () async {
-            await context
-                .read<AuthenticationProvider>()
-                .sendFriendRequest(friendID: userModel.uid)
-                .whenComplete(() {
-              showSnackBar(context, 'friend request send');
-            });
-          },
-          label: 'Send Friend Request',
-        );
+        if (userModel.friendRequestsUIDs.contains(currentUser.uid)) {
+          return buildElevatedButton(
+            onPressed: () async {
+              await context
+                  .read<AuthenticationProvider>()
+                  .cancelFriendRequest(friendID: userModel.uid)
+                  .whenComplete(
+                () {
+                  showSnackBar(
+                    context,
+                    'Friend Request Cancel',
+                  );
+                },
+              );
+            },
+            label: 'Cancel Friend Request',
+          );
+        } else if (userModel.sentFriendRequestsUIDs.contains(currentUser.uid)) {
+          return buildElevatedButton(
+              onPressed: () async {
+                await context
+                    .read<AuthenticationProvider>()
+                    .acceptFriendRequest(friendID: userModel.uid)
+                    .whenComplete(
+                  () {
+                    showSnackBar(
+                      context,
+                      'You are now friends with ${userModel.name}',
+                    );
+                  },
+                );
+              },
+              label: 'Accept Friend Request');
+        } else {
+          return buildElevatedButton(
+              onPressed: () async {
+                await context
+                    .read<AuthenticationProvider>()
+                    .sendFriendRequest(friendID: userModel.uid)
+                    .whenComplete(
+                  () {
+                    showSnackBar(
+                      context,
+                      'Friend Request Send',
+                    );
+                  },
+                );
+              },
+              label: 'Send Friend Request');
+        }
       } else {
         return const SizedBox.shrink();
       }

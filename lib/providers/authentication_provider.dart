@@ -228,6 +228,46 @@ class AuthenticationProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> cancelFriendRequest({required String friendID}) async {
+    try {
+      await _firestore.collection(Constants.users).doc(friendID).update(
+        {
+          Constants.friendRequestsUIDs: FieldValue.arrayRemove([_uid]),
+        },
+      );
+      await _firestore.collection(Constants.users).doc(_uid).update(
+        {
+          Constants.sentFriendRequestsUIDs: FieldValue.arrayRemove([friendID]),
+        },
+      );
+    } on FirebaseAuthException catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> acceptFriendRequest({required String friendID}) async {
+    await _firestore.collection(Constants.users).doc(friendID).update(
+      {
+        Constants.friendsUIDs: FieldValue.arrayUnion([_uid])
+      },
+    );
+    await _firestore.collection(Constants.users).doc(_uid).update(
+      {
+        Constants.friendsUIDs: FieldValue.arrayUnion([friendID])
+      },
+    );
+    await _firestore.collection(Constants.users).doc(friendID).update(
+      {
+        Constants.sentFriendRequestsUIDs: FieldValue.arrayRemove([_uid])
+      },
+    );
+    await _firestore.collection(Constants.users).doc(_uid).update(
+      {
+        Constants.friendRequestsUIDs: FieldValue.arrayRemove([friendID])
+      },
+    );
+  }
+
   Future logout() async {
     await _auth.signOut();
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
