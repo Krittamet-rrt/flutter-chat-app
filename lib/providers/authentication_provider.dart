@@ -223,7 +223,9 @@ class AuthenticationProvider extends ChangeNotifier {
           Constants.sentFriendRequestsUIDs: FieldValue.arrayUnion([friendID]),
         },
       );
-    } on FirebaseException catch (e) {}
+    } on FirebaseException catch (e) {
+      print(e);
+    }
   }
 
   Future logout() async {

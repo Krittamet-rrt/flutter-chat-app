@@ -198,7 +198,10 @@ class _ProfilePageState extends State<ProfilePage> {
           onPressed: () async {
             await context
                 .read<AuthenticationProvider>()
-                .sendFriendRequest(friendID: userModel.uid);
+                .sendFriendRequest(friendID: userModel.uid)
+                .whenComplete(() {
+              showSnackBar(context, 'friend request send');
+            });
           },
           label: 'Send Friend Request',
         );
@@ -215,7 +218,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.7,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: onPressed,
         child: Text(
           label.toUpperCase(),
           style: GoogleFonts.prompt(
